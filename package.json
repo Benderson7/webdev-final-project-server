@@ -1,4 +1,5 @@
 {
+  "type": "module",
   "name": "webdev-final-project-server",
   "version": "1.0.0",
   "description": "Node.js HTTP Web server for the Final Project",
@@ -25,6 +26,8 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.18.2",
-    "nodemon": "^2.0.20"
+    "nodemon": "^2.0.20",
+    "pokedex-promise-v2": "^4.0.0",
+    "underscore": "^1.13.6"
   }
 }
