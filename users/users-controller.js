@@ -61,12 +61,19 @@ const UsersController = (app) => {
         res.json(status)
     }
 
+    const getUserProfile = async (req, res) => {
+        const userID = req.params.uid;
+        const user = await userDao.findUserById(userID);
+        res.json(user)
+    }
+
 
     app.get('/users', findAllUsers)
     app.post('/register', register)
     app.post('/login', login)
     app.post('/logout', logout)
     app.post('/profile', profile)
+    app.get('/profile/:uid', getUserProfile)
     app.put('/users/:uid', updateUser)
 }
 
