@@ -4,6 +4,7 @@ import PokemonController from "./controllers/pokemon/pokemon-controller.js";
 import mongoose from "mongoose";
 import UsersController from "./users/users-controller.js";
 import session from "express-session";
+import TeamsController from "./teams/teams-controller.js";
 
 mongoose.connect('mongodb://localhost:27017/pokemon');
 const app = express();
@@ -20,4 +21,5 @@ app.use(session({
 app.use(express.json());
 PokemonController(app);
 UsersController(app)
+TeamsController(app)
 app.listen( 4000);
