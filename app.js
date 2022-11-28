@@ -5,8 +5,10 @@ import mongoose from "mongoose";
 import UsersController from "./users/users-controller.js";
 import session from "express-session";
 import TeamsController from "./teams/teams-controller.js";
+import TeamsCommentController from "./teams-comment/teams-comment-controller.js";
 
-mongoose.connect('mongodb://localhost:27017/pokemon');
+const CONNECTION_STRING = process.env.DB_WEBDEV_PROJECT_CONNECTION_STRING || 'mongodb://localhost:27017/pokemon'
+mongoose.connect(CONNECTION_STRING);
 const app = express();
 app.use(cors({
     credentials: true,
@@ -22,4 +24,5 @@ app.use(express.json());
 PokemonController(app);
 UsersController(app)
 TeamsController(app)
+TeamsCommentController(app)
 app.listen( 4000);
