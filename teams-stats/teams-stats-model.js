@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import teamsStatsSchema from "./teams-stats-schema.js.js";
+import teamsStatsSchema from "./teams-stats-schema.js";
 
 const teamsStatsModel = mongoose.model('TeamsStatsModel', teamsStatsSchema)
 

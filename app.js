@@ -6,6 +6,7 @@ import UsersController from "./users/users-controller.js";
 import session from "express-session";
 import TeamsController from "./teams/teams-controller.js";
 import TeamsCommentController from "./teams-comment/teams-comment-controller.js";
+import TeamsStatsController from "./teams-stats/team-stats-controller.js";
 
 const CONNECTION_STRING = process.env.DB_WEBDEV_PROJECT_CONNECTION_STRING || 'mongodb://localhost:27017/pokemon'
 mongoose.connect(CONNECTION_STRING);
@@ -24,5 +25,6 @@ app.use(express.json());
 PokemonController(app);
 UsersController(app)
 TeamsController(app)
+TeamsStatsController(app)
 TeamsCommentController(app)
 app.listen( 4000);
