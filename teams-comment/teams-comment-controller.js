@@ -8,6 +8,12 @@ const TeamsCommentController = (app) => {
         res.json(newComment)
     }
 
+    const getCommentsForTeam = async (req, res) => {
+        const tid = req.params.tid;
+        const comments = await teamsCommentDao.getCommentsForTeam(tid)
+        res.json(comments)
+    }
+
     const updateComment = async (req, res) => {
         const cid = req.params.cid;
         const body = req.body
@@ -23,6 +29,7 @@ const TeamsCommentController = (app) => {
     }
 
 
+    app.get('/teams/:tid/comments', getCommentsForTeam)
     app.post('/comment', createComment)
     app.put('/comment/:cid', updateComment)
     app.delete('/comment/:cid', deleteComment)

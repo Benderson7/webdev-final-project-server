@@ -49,7 +49,7 @@ const UsersController = (app) => {
         res.sendStatus(200)
     }
 
-    const profile = (req, res) => {
+    const getCurrentUser = (req, res) => {
         res.json(req.session['currentUser']);
     }
 
@@ -72,7 +72,7 @@ const UsersController = (app) => {
     app.post('/register', register)
     app.post('/login', login)
     app.post('/logout', logout)
-    app.post('/profile', profile)
+    app.post('/users/current', getCurrentUser)
     app.get('/profile/:uid', getUserProfile)
     app.put('/users/:uid', updateUser)
 }

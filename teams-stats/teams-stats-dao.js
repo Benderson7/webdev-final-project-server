@@ -14,3 +14,6 @@ export const userDislike = async (uid, team) => {
 
 export const removeStatus = async (uid, team) =>
     await teamsStatsModel.deleteOne({user: uid, team: team})
+
+export const getTeamStats = async (tid) =>
+    await teamsStatsModel.find({team: tid})

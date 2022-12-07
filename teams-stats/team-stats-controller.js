@@ -27,9 +27,20 @@ const TeamsStatsController = (app) => {
         res.json(status)
     }
 
+    const getTeamStats = async (req, res) => {
+        const tid = req.params.tid;
+        const teamStats = await teamsStatsDao.getTeamStats(tid)
+
+        let likes = 0;
+        let dislikes = 0;
+        teamStats.forEach((stat) => {stat.status === 'LIKE' ? likes = likes + 1 : dislikes = dislikes + 1})
+        res.json({likes, dislikes})
+        }
+
     app.post('/users/:uid/likes/:tid', userLikesTeam)
     app.delete('/users/:uid/likes/:tid', userRemovesStatusTeam)
     app.post('/users/:uid/dislikes/:tid', userDislikesTeam)
+    app.get('/teams/:tid/stats', getTeamStats)
 }
 
 export default TeamsStatsController

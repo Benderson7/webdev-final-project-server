@@ -7,7 +7,7 @@ export const findAllUsers = async () =>
     await usersModel.find()
 
 export const findUserById = async (uid) =>
-    await usersModel.findOne({uid})
+    await usersModel.findOne({_id: uid})
 
 export const findUserByUsername = async (username) =>
     await usersModel.findOne({username})
