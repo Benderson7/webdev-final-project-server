@@ -25,7 +25,7 @@ const UsersController = (app) => {
 
         // Creating a new user
         const newUser = await userDao.createUser(user)
-        // Might need this, uncommenting this will mess up the update profile implementation newUser.password = '';
+        newUser.password = '';
         req.session['currentUser'] = newUser;
         res.json(newUser)
     }
@@ -35,7 +35,7 @@ const UsersController = (app) => {
         const existingUser = await userDao.findUserByCredentials(credentials.username, credentials.password);
         if(existingUser) {
 
-            // Might need this, uncommenting this will mess up the update profile implementation existingUser.password = '';
+            existingUser.password = '';
             req.session['currentUser'] = existingUser
             res.json(existingUser);
         }
@@ -56,14 +56,19 @@ const UsersController = (app) => {
     const updateUser = async (req, res) => {
         const userIdToUpdate = req.params.uid;
         const update = req.body;
+
+        if (update.password === '') {
+            delete update.password
+        }
+
         const status = await userDao.updateUser(userIdToUpdate, update);
-        // might need to set the current user again and maybe pass back the current user?
         res.json(status)
     }
 
     const getUserProfile = async (req, res) => {
         const userID = req.params.uid;
         const user = await userDao.findUserById(userID);
+        user.password = '';
         res.json(user)
     }
 
