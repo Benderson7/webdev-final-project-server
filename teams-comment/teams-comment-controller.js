@@ -4,13 +4,19 @@ const TeamsCommentController = (app) => {
 
     const createComment = async (req, res) => {
         const comment = req.body;
-        const newComment = await teamsCommentDao.createComment(comment)
+        let newComment = await teamsCommentDao.createComment(comment)
         res.json(newComment)
     }
 
     const getCommentsForTeam = async (req, res) => {
         const tid = req.params.tid;
         const comments = await teamsCommentDao.getCommentsForTeam(tid)
+        res.json(comments)
+    }
+
+    const getUserComments = async (req, res) => {
+        const uid = req.params.uid;
+        const comments = await teamsCommentDao.getCommentsForUser(uid)
         res.json(comments)
     }
 
@@ -33,6 +39,7 @@ const TeamsCommentController = (app) => {
     app.post('/comment', createComment)
     app.put('/comment/:cid', updateComment)
     app.delete('/comment/:cid', deleteComment)
+    app.get('/users/:uid/comments', getUserComments)
 }
 
 export default TeamsCommentController;
