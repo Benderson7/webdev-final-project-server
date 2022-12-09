@@ -4,27 +4,52 @@ const TeamsStatsController = (app) => {
 
 
     const userLikesTeam = async (req, res) => {
-        const uid = req.params.uid;
-        const tid = req.params.tid;
+        if (req.session['currentUser'] === undefined) {
+            res.json(null)
+        }
+        else {
+            const currentUser = req.session['currentUser']
+            const uid = currentUser._id
+            const tid = req.params.tid;
+            const status = await teamsStatsDao.findStatus(uid, tid)
 
-        await teamsStatsDao.removeStatus(uid, tid);
-        const like = await teamsStatsDao.userLike(uid, tid);
-        res.json(like)
+            let type = 'create'
+            if (status) {
+                type = 'update'
+            }
+            await teamsStatsDao.removeStatus(uid, tid);
+            const like = await teamsStatsDao.userLike(uid, tid);
+            res.json({...like, request: type})
+        }
     }
 
     const userDislikesTeam = async (req, res) => {
-        const uid = req.params.uid;
-        const tid = req.params.tid;
-        await teamsStatsDao.removeStatus(uid, tid);
-        const dislike = await teamsStatsDao.userDislike(uid, tid);
-        res.json(dislike)
+        if (req.session['currentUser'] === undefined) {
+            res.json(null)
+        }
+        else {
+            const currentUser = req.session['currentUser']
+            const uid = currentUser._id
+            const tid = req.params.tid;
+            const status = await teamsStatsDao.findStatus(uid, tid)
+
+            let type = 'create'
+            if (status) {
+                type = 'update'
+            }
+            await teamsStatsDao.removeStatus(uid, tid);
+            const like = await teamsStatsDao.userDislike(uid, tid);
+            res.json({...like, request: type})
+        }
     }
 
     const userRemovesStatusTeam = async (req, res) => {
-        const uid = req.params.uid;
+        const currentUser = req.session['currentUser']
+        const uid = currentUser._id
         const tid = req.params.tid;
+        const typeToRemove = req.params.status
         const status = await teamsStatsDao.removeStatus(uid, tid);
-        res.json(status)
+        res.json({...status, type: typeToRemove})
     }
 
     const getTeamStats = async (req, res) => {
@@ -35,12 +60,28 @@ const TeamsStatsController = (app) => {
         let dislikes = 0;
         teamStats.forEach((stat) => {stat.status === 'LIKE' ? likes = likes + 1 : dislikes = dislikes + 1})
         res.json({likes, dislikes})
-        }
+    }
 
-    app.post('/users/:uid/likes/:tid', userLikesTeam)
-    app.delete('/users/:uid/likes/:tid', userRemovesStatusTeam)
-    app.post('/users/:uid/dislikes/:tid', userDislikesTeam)
+    const getUserTeamStatus = async (req, res) => {
+        if (req.session['currentUser'] === undefined) {
+            res.json(null)
+        }
+        else {
+            const currentUser = req.session['currentUser']
+            const uid = currentUser._id
+            const {tid} = req.params;
+            const status = await teamsStatsDao.findStatus(uid, tid)
+            res.json(status)
+        }
+    }
+
+
+
+    app.post('/users/likes/:tid', userLikesTeam)
+    app.post('/users/dislikes/:tid', userDislikesTeam)
+    app.delete('/users/teams/:tid/stats/:status', userRemovesStatusTeam)
     app.get('/teams/:tid/stats', getTeamStats)
+    app.get('/users/teams/:tid/status', getUserTeamStatus)
 }
 
 export default TeamsStatsController

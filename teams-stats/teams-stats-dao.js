@@ -1,7 +1,8 @@
 import teamsStatsModel from "./teams-stats-model.js";
 
-export const findStatus = async (uid, tid) =>
-    await teamsStatsModel.findOne({user: uid, team: tid})
+export const findStatus = async (uid, tid) => {
+    return await teamsStatsModel.findOne({user: uid, team: tid})
+}
 
 
 export const userLike = async (uid, team) => {
