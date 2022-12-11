@@ -10,3 +10,4 @@ export const findAllTeams = async () =>
 export const findTeamByUserID = async (uid) => {
     return await teamsModel.findOne({user: uid})
 }
+

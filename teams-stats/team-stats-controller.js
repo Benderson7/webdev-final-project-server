@@ -1,4 +1,5 @@
 import * as teamsStatsDao from "./teams-stats-dao.js";
+import * as teamsDao from "../teams/teams-dao.js";
 
 const TeamsStatsController = (app) => {
 
@@ -76,12 +77,27 @@ const TeamsStatsController = (app) => {
     }
 
 
+    const getUserLikedTeams = async (req, res) => {
+        const uid = req.params.uid;
+        const likedTeams = await teamsStatsDao.getUserLikedTeams(uid)
+        res.json(likedTeams)
+    }
+
+    const getUserDislikedTeams = async (req, res) => {
+        const uid = req.params.uid;
+        const dislikedTeams = await teamsStatsDao.getUserDislikedTeams(uid)
+        res.json(dislikedTeams)
+    }
+
+
 
     app.post('/users/likes/:tid', userLikesTeam)
     app.post('/users/dislikes/:tid', userDislikesTeam)
     app.delete('/users/teams/:tid/stats/:status', userRemovesStatusTeam)
     app.get('/teams/:tid/stats', getTeamStats)
     app.get('/users/teams/:tid/status', getUserTeamStatus)
+    app.get('/users/:uid/teams/liked', getUserLikedTeams)
+    app.get('/users/:uid/teams/disliked', getUserDislikedTeams)
 }
 
 export default TeamsStatsController
