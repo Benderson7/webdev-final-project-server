@@ -12,7 +12,7 @@ export const createComment = async (comment) => {
 }
 
 export const getCommentsForTeam = async (tid) =>
-    await teamsCommentModel.find({team: tid}, {team: false, _id: false})
+    await teamsCommentModel.find({team: tid}, {team: false})
         .populate('user', 'username')
         .exec()
 
@@ -30,4 +30,4 @@ export const updateComment = async (cid, newComment) =>
     await teamsCommentModel.updateOne({_id: cid}, {$set: newComment})
 
 export const deleteComment = async (cid) =>
-    await teamsCommentModel.findOneAndDelete({_id: cid})
+    await teamsCommentModel.deleteOne({_id: cid})

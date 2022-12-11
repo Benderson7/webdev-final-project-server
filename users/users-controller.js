@@ -72,6 +72,12 @@ const UsersController = (app) => {
         res.json(user)
     }
 
+    const deleteUser = async (req, res) => {
+        const userIDToDelete = req.params.uid;
+        const status = await userDao.deleteUser(userIDToDelete)
+        res.json(status)
+    }
+
 
     app.get('/users', findAllUsers)
     app.post('/register', register)
@@ -80,6 +86,7 @@ const UsersController = (app) => {
     app.post('/users/current', getCurrentUser)
     app.get('/profile/:uid', getUserProfile)
     app.put('/users/:uid', updateUser)
+    app.delete('/users/:uid', deleteUser)
 }
 
 export default UsersController

@@ -29,7 +29,6 @@ const TeamsCommentController = (app) => {
 
     const deleteComment = async (req, res) => {
         const cid = req.params.cid;
-        console.log(cid)
         const deleted = await teamsCommentDao.deleteComment(cid);
         res.json(deleted)
     }
@@ -38,7 +37,7 @@ const TeamsCommentController = (app) => {
     app.get('/teams/:tid/comments', getCommentsForTeam)
     app.post('/comment', createComment)
     app.put('/comment/:cid', updateComment)
-    app.delete('/comment/:cid', deleteComment)
+    app.delete('/comments/:cid', deleteComment)
     app.get('/users/:uid/comments', getUserComments)
 }
 
