@@ -1,6 +1,6 @@
 import Pokedex from 'pokedex-promise-v2';
 import _ from 'underscore';
-import {findPokemon} from "./pokemon-dao.js";
+import {createPokemon, editPokemon, findPokemon} from "./pokemon-dao.js";
 
 const P = new Pokedex();
 
@@ -17,8 +17,8 @@ const getPokemonByNameOrId = async (nameOrId) => {
         // this conditional is a quick hack to know whether we're on the profile page or not
         const id = parseInt(nameOrId);
         if (id) {
-            pokemon = await findPokemon(id);
-            pokemon.teams = pokemon ? pokemon.teams : [];
+            const pokemonDoa = await findPokemon(id);
+            pokemon.teams = pokemonDoa ? pokemonDoa.teams : [];
         }
         return pokemon;
     } catch (error) {
@@ -75,7 +75,17 @@ const searchPokemon = async (req, res) => {
     res.json(await getPokemonByNameOrId(req.params.id));
 };
 
+const updatePokemon = async (req, res) => {
+    const pokemon = {
+        id: req.body.id,
+        teams: req.body.teams
+    }
+    await findPokemon(pokemon.id) ? await editPokemon(pokemon) : await createPokemon(pokemon);
+    res.json(await getPokemonByNameOrId(pokemon.id));
+};
+
 export default (app) => {
     app.get('/api/pokemon', getPokemon);
     app.get('/api/pokemon/:id', searchPokemon);
+    app.put('/api/pokemon/:id', updatePokemon);
 };
