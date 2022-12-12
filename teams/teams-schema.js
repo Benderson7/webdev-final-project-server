@@ -10,7 +10,7 @@ const teamsSchema = mongoose.Schema({
     user: {type: mongoose.Schema.Types.ObjectId, ref: 'UserModel'},
     pokemons: {
         type: [{
-            type: mongoose.Schema.Types.ObjectId,
+            type: Number,
             ref: 'PokemonModel'
         }],
         validate: [teamLimit, '{PATH} exceeds the limit of 6']

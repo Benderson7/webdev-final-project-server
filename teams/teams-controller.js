@@ -20,9 +20,36 @@ const TeamsController = (app) => {
         res.json(newTeam)
     }
 
+    const addToTeam = async (req, res) => {
+        const {uid, pid} = req.params
+
+        // Need to check if the team has been created
+        const existingTeam = await teamsDao.findTeamByUserID(uid)
+
+        // Create an initial blank team if there is no team
+        if (!existingTeam) {
+            await teamsDao.createBlankTeam(uid)
+        }
+
+        // Add the pokemon to the team
+        const status = await teamsDao.addPokemonToTeam(uid, pid)
+        res.json(status)
+
+        // Might need to check if the team already has 6 pokemon
+
+    }
+
+    const removeFromTeam = async (req, res) => {
+        const {uid, pid} = req.params
+        const status = await teamsDao.removePokemonFromTeam(uid, parseInt(pid))
+        res.json(status)
+    }
+
     app.get('/teams/:uid', findTeamByUserID)
     app.get('/teams', findAllTeams)
     app.post('/teams/:uid', createTeam)
+    app.put('/users/:uid/teams/add/:pid', addToTeam)
+    app.put('/users/:uid/teams/remove/:pid', removeFromTeam)
 }
 
 export default TeamsController;
