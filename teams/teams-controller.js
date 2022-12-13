@@ -45,11 +45,18 @@ const TeamsController = (app) => {
         res.json(status)
     }
 
+    const getTeamsWithPokemon = async (req, res) => {
+        const {pid} = req.params
+        const teamsWithPokemon = await teamsDao.getTeamsWithPokemon(parseInt(pid))
+        res.json(teamsWithPokemon)
+    }
+
     app.get('/teams/:uid', findTeamByUserID)
     app.get('/teams', findAllTeams)
     app.post('/teams/:uid', createTeam)
     app.put('/users/:uid/teams/add/:pid', addToTeam)
     app.put('/users/:uid/teams/remove/:pid', removeFromTeam)
+    app.get('/teams/pokemons/:pid', getTeamsWithPokemon)
 }
 
 export default TeamsController;

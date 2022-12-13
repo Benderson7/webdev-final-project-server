@@ -19,9 +19,12 @@ export const addPokemonToTeam = async (uid, pid) =>
         {$push: {'pokemons': pid}}
     )
 
-
 export const removePokemonFromTeam = async (uid, pid) =>
     await teamsModel.updateOne(
         {user: uid},
         {$pull: {'pokemons': pid}})
 
+export const getTeamsWithPokemon = async (pid) =>
+    await teamsModel.find({pokemons: pid}, {pokemons: false, __v: false})
+        .populate({path: "user", select: {_id: 1, username: 1}})
+        .exec()
