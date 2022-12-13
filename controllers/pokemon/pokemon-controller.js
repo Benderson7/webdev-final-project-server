@@ -9,9 +9,8 @@ const DEFAULT_SEARCH_INTERVAL = 10;
 const getPokemonByNameOrId = async (nameOrId) => {
     try {
         // looks a little weird cuz I was trying to optimize the async calls
-        const details = getDetails(nameOrId);
-        const evolutions = getEvolutions(nameOrId);
-        let pokemon = await details;
+        const evolutions = await getEvolutions(nameOrId);
+        let pokemon = await getDetails(nameOrId);
         pokemon.evolution_chain = await evolutions;
 
         // this conditional is a quick hack to know whether we're on the profile page or not
@@ -22,7 +21,7 @@ const getPokemonByNameOrId = async (nameOrId) => {
         }
         return pokemon;
     } catch (error) {
-        throw error
+        return null;
     }
 };
 
