@@ -6,7 +6,11 @@ const usersSchema = mongoose.Schema({
     email: String,
     firstName: String,
     lastName: String,
-    role: {type: String, enum: ['ADMIN', 'USER'], default: "USER"}
+    role: {type: String, enum: ['ADMIN', 'USER'], default: "USER"},
+    team: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'TeamsModel'
+        }
 }, {collection: 'users'})
 
 export default usersSchema

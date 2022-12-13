@@ -1,25 +1,33 @@
 import Pokedex from 'pokedex-promise-v2';
 import _ from 'underscore';
+import {createPokemon, editPokemon, findPokemon} from "./pokemon-dao.js";
 
 const P = new Pokedex();
 
 const DEFAULT_SEARCH_INTERVAL = 10;
 
-const getPokemonByName = async (name) => {
+const getPokemonByNameOrId = async (nameOrId) => {
     try {
         // looks a little weird cuz I was trying to optimize the async calls
-        const details = getDetails(name);
-        const evolutions = getEvolutions(name);
+        const details = getDetails(nameOrId);
+        const evolutions = getEvolutions(nameOrId);
         let pokemon = await details;
         pokemon.evolution_chain = await evolutions;
+
+        // this conditional is a quick hack to know whether we're on the profile page or not
+        const id = parseInt(nameOrId);
+        if (id) {
+            const pokemonDoa = await findPokemon(id);
+            pokemon.teams = pokemonDoa ? pokemonDoa.teams : [];
+        }
         return pokemon;
     } catch (error) {
         throw error
     }
 };
 
-const getDetails = async (name) => {
-    const response = await P.getResource(`/api/v2/pokemon/${name}`);
+const getDetails = async (nameOrId) => {
+    const response = await P.getResource(`/api/v2/pokemon/${nameOrId}`);
     let pokemon = {};
     pokemon.id = response.id;
     pokemon.name = response.name;
@@ -29,9 +37,9 @@ const getDetails = async (name) => {
     return pokemon;
 }
 
-const getEvolutions = async (name) => {
+const getEvolutions = async (nameOrId) => {
     // need a separate call to give us the evolution chain id
-    const pokemon = await P.getPokemonSpeciesByName(name);
+    const pokemon = await P.getPokemonSpeciesByName(nameOrId);
     let evolutions = (await P.getResource(pokemon.evolution_chain.url)).chain;
     evolutions = cleanupEvolutionInfo(evolutions);
     return evolutions;
@@ -52,21 +60,32 @@ const cleanupEvolutionInfo = (pokemon) => {
 };
 
 const getPokemon = async (req, res) => {
-    P.getPokemonsList({limit: DEFAULT_SEARCH_INTERVAL})
+    // get random slice from first few gens
+    P.getPokemonsList({ offset: Math.round(Math.random() * 300), limit: DEFAULT_SEARCH_INTERVAL })
         .then(async (response) => {
             let pokemon = response.results;
             pokemon = await Promise.all(pokemon.map(async (poke) => {
-                return await getPokemonByName(poke.name);
+                return await getPokemonByNameOrId(poke.name);
             }));
             res.json(pokemon);
         });
 };
 
 const searchPokemon = async (req, res) => {
-    res.json(await getPokemonByName(req.params.name));
+    res.json(await getPokemonByNameOrId(req.params.id));
+};
+
+const updatePokemon = async (req, res) => {
+    const pokemon = {
+        id: req.body.id,
+        teams: req.body.teams
+    }
+    await findPokemon(pokemon.id) ? await editPokemon(pokemon) : await createPokemon(pokemon);
+    res.json(await getPokemonByNameOrId(pokemon.id));
 };
 
 export default (app) => {
     app.get('/api/pokemon', getPokemon);
-    app.get('/api/pokemon/:name', searchPokemon);
+    app.get('/api/pokemon/:id', searchPokemon);
+    app.put('/api/pokemon/:id', updatePokemon);
 };
