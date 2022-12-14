@@ -1,11 +1,22 @@
 import * as teamsDao from "./teams-dao.js";
+import * as pokemonController from "../controllers/pokemon/pokemon-controller.js"
 
 const TeamsController = (app) => {
 
     const findTeamByUserID = async (req, res) => {
         const uid = req.params.uid;
         const team = await teamsDao.findTeamByUserID(uid);
-        res.json(team)
+        const pokemonIds = team.pokemons
+        let teamDetails = []
+
+        // Getting the details for each pokemon
+        for (const id of pokemonIds) {
+            const details = await pokemonController.getDetails(id)
+            teamDetails.push(details)
+        }
+
+        const populatedTeam = {_id: team._id, user: team.user, pokemons: teamDetails}
+        res.json(populatedTeam)
     }
 
     const findAllTeams = async (req, res) => {

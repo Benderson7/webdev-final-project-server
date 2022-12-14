@@ -1,6 +1,7 @@
 import Pokedex from 'pokedex-promise-v2';
 import _ from 'underscore';
 import {createPokemon, editPokemon, findPokemon} from "./pokemon-dao.js";
+import * as teamsDao from "../../teams/teams-dao.js";
 
 const P = new Pokedex();
 
@@ -25,7 +26,7 @@ const getPokemonByNameOrId = async (nameOrId) => {
     }
 };
 
-const getDetails = async (nameOrId) => {
+export const getDetails = async (nameOrId) => {
     const response = await P.getResource(`/api/v2/pokemon/${nameOrId}`);
     let pokemon = {};
     pokemon.id = response.id;
@@ -35,6 +36,32 @@ const getDetails = async (nameOrId) => {
     pokemon.abilities = response.abilities.map((a) => a.ability.name);
     return pokemon;
 }
+
+
+const getTeamDetails = async (req, res) => {
+    try {
+        const {uid} = req.params
+
+        // Getting the team
+        const userTeam = await teamsDao.findTeamByUserID(uid)
+        const pokemonIds = userTeam.pokemons
+        let teamDetails = []
+
+        // Getting the details for each pokemon
+        for (const id of pokemonIds) {
+            const details = await getDetails(id)
+            teamDetails.push(details)
+        }
+
+        res.json(teamDetails)
+
+        res.json(teamDetails)
+    } catch (error) {
+        return null;
+    }
+
+}
+
 
 const getEvolutions = async (nameOrId) => {
     // need a separate call to give us the evolution chain id
