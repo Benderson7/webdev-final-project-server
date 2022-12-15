@@ -14,7 +14,8 @@ const teamsSchema = mongoose.Schema({
             ref: 'PokemonModel'
         }],
         validate: [teamLimit, '{PATH} exceeds the limit of 6']
-    }
+    },
+    time: {type: Date, default: Date.now}
 },{collection: 'teams'})
 
 

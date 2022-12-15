@@ -90,7 +90,6 @@ const TeamsStatsController = (app) => {
     }
 
 
-
     app.post('/users/likes/:tid', userLikesTeam)
     app.post('/users/dislikes/:tid', userDislikesTeam)
     app.delete('/users/teams/:tid/stats/:status', userRemovesStatusTeam)

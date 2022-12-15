@@ -1,5 +1,4 @@
 import teamsStatsModel from "./teams-stats-model.js";
-import teamsModel from "../teams/teams-model.js";
 
 export const findStatus = async (uid, tid) => {
     return await teamsStatsModel.findOne({user: uid, team: tid})

@@ -20,6 +20,33 @@ const TeamsCommentController = (app) => {
         res.json(comments)
     }
 
+
+    const getUserRecentComments = async (req, res) => {
+        const currentUser = req.session['currentUser']
+        if (currentUser) {
+            const uid = req.session['currentUser']._id
+            const comments = await teamsCommentDao.getRecentCommentsForUser(uid)
+            res.json(comments)
+        }
+        else {
+            res.json([])
+        }
+    }
+
+
+    const getRecentComments = async (req, res) => {
+        const currentUser = req.session['currentUser']
+        if (currentUser) {
+            const uid = req.session['currentUser']._id
+            const comments = await teamsCommentDao.getRecentCommentsExcludeCurrentUser(uid)
+            res.json(comments)
+        }
+        else {
+            const comments = await teamsCommentDao.getRecentComments()
+            res.json(comments)
+        }
+    }
+
     const updateComment = async (req, res) => {
         const cid = req.params.cid;
         const body = req.body
@@ -39,6 +66,8 @@ const TeamsCommentController = (app) => {
     app.put('/comment/:cid', updateComment)
     app.delete('/comments/:cid', deleteComment)
     app.get('/users/:uid/comments', getUserComments)
+    app.get('/users/comments/recent', getUserRecentComments)
+    app.get('/comments/recent', getRecentComments)
 }
 
 export default TeamsCommentController;

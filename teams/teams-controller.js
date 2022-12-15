@@ -25,6 +25,30 @@ const TeamsController = (app) => {
         }
     }
 
+
+    const getMostRecentTeams = async (req, res) => {
+        const mostRecentTeams = await teamsDao.getRecentTeams();
+
+        let teamsDetails = []
+
+        for (const team of mostRecentTeams) {
+            const pokemonIds = team.pokemons
+            let teamDetails = []
+
+            // Getting the details for each pokemon
+            for (const id of pokemonIds) {
+                const details = await pokemonController.getDetails(id)
+                teamDetails.push(details)
+            }
+
+            const populatedTeam = {_id: team._id, user: team.user, pokemons: teamDetails, time: team.time}
+            teamsDetails.push(populatedTeam)
+        }
+        res.json(teamsDetails)
+
+    }
+
+
     const findAllTeams = async (req, res) => {
         const teams = await teamsDao.findAllTeams();
         res.json(teams)
@@ -68,12 +92,14 @@ const TeamsController = (app) => {
         res.json(teamsWithPokemon)
     }
 
+
     app.get('/teams/:uid', findTeamByUserID)
     app.get('/teams', findAllTeams)
     app.post('/teams/:uid', createTeam)
     app.put('/users/:uid/teams/add/:pid', addToTeam)
     app.put('/users/:uid/teams/remove/:pid', removeFromTeam)
     app.get('/teams/pokemons/:pid', getTeamsWithPokemon)
+    app.get('/teams/status/recent', getMostRecentTeams)
 }
 
 export default TeamsController;
