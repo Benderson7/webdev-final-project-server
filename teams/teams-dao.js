@@ -5,7 +5,7 @@ export const userCreatesTeam = async (uid, newTeam) => {
 }
 
 export const createBlankTeam = async (uid) =>
-    await teamsModel.create({user: uid})
+    await teamsModel.create({user: uid, time: Date.now()})
 
 export const findAllTeams = async () =>
     await teamsModel.find()

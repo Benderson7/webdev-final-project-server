@@ -8,7 +8,8 @@ const teamsSchema = mongoose.Schema({
             type: Number,
             ref: 'PokemonModel'
         }]
-    }
+    },
+    time: {type: Date, default: Date.now}
 },{collection: 'teams'})
 
 export default teamsSchema
