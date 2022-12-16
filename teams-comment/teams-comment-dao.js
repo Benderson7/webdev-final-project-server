@@ -38,24 +38,26 @@ export const getRecentCommentsForUser = async (uid) =>
         .exec()
 
 export const getRecentComments = async () =>
-    await teamsCommentModel.find({}, {_id: false, user: false, __v: false})
+    await teamsCommentModel.find({}, {_id: false, __v: false})
         .sort({time: -1})
         .populate(
             {path: 'team',
                 populate: {path: 'user', select: {_id: 1, username: 1}},
                 select: {_id: 0, pokemons: 0, __v: 0},
             })
+        .populate("user")
         .limit(5)
         .exec()
 
 export const getRecentCommentsExcludeCurrentUser = async (uid) =>
-    await teamsCommentModel.find({user: {$ne: uid}}, {_id: false, user: false, __v: false})
+    await teamsCommentModel.find({user: {$ne: uid}}, {_id: false, __v: false})
         .sort({time: -1})
         .populate(
             {path: 'team',
                 populate: {path: 'user', select: {_id: 1, username: 1}},
                 select: {_id: 0, pokemons: 0, __v: 0},
             })
+        .populate("user")
         .limit(5)
         .exec()
 
