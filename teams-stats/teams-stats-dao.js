@@ -1,4 +1,5 @@
 import teamsStatsModel from "./teams-stats-model.js";
+import teamsModel from "../teams/teams-model.js";
 
 export const findStatus = async (uid, tid) => {
     return await teamsStatsModel.findOne({user: uid, team: tid})
@@ -40,3 +41,12 @@ export const getUserDislikedTeams = async (uid) => {
             })
         .exec()
 }
+
+
+export const deleteUserStats = async (uid) => {
+    return await teamsStatsModel.deleteMany({user: uid})
+}
+
+
+export const deleteTeamStats = async (tid) =>
+    await teamsStatsModel.deleteMany({team: tid})

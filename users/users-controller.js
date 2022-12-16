@@ -1,4 +1,7 @@
 import * as userDao from './users-dao.js'
+import * as teamDao from '../teams/teams-dao.js'
+import * as teamCommentsDao from '../teams-comment/teams-comment-dao.js'
+import * as teamStatsDao from '../teams-stats/teams-stats-dao.js'
 
 const UsersController = (app) => {
 
@@ -75,6 +78,17 @@ const UsersController = (app) => {
     const deleteUser = async (req, res) => {
         const userIDToDelete = req.params.uid;
         const status = await userDao.deleteUser(userIDToDelete)
+
+        const team = await teamDao.findTeamByUserID(userIDToDelete)
+        const tid = team._id
+        // delete team, team-comments and team-stat with the given user_id
+        await teamDao.deleteUserTeam(userIDToDelete)
+        await teamCommentsDao.deleteCommentsByUser(userIDToDelete)
+        await teamStatsDao.deleteUserStats(userIDToDelete)
+
+        // delete team-comments and team-stat with the given team_id
+        await teamCommentsDao.deleteCommentsOnTeam(tid)
+        await teamStatsDao.deleteTeamStats(tid)
         res.json(status)
     }
 

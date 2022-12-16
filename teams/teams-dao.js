@@ -1,4 +1,5 @@
 import teamsModel from "./teams-model.js";
+import usersModel from "../users/users-model.js";
 
 export const userCreatesTeam = async (uid, newTeam) => {
     return await teamsModel.create({user: uid, pokemons: newTeam})
@@ -54,3 +55,9 @@ export const getRecentTeamsExcludingCurrent = async (uid) =>
         .sort({time: -1})
         .limit(3)
         .exec()
+
+
+export const deleteUserTeam = async (uid) => {
+    return await teamsModel.deleteOne({user: uid})
+}
+

@@ -66,3 +66,9 @@ export const updateComment = async (cid, newComment) =>
 
 export const deleteComment = async (cid) =>
     await teamsCommentModel.deleteOne({_id: cid})
+
+export const deleteCommentsByUser = async (uid) =>
+    await teamsCommentModel.deleteMany({user: uid})
+
+export const deleteCommentsOnTeam = async (tid) =>
+    await teamsCommentModel.deleteMany({team: tid})
